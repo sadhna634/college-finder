@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = '';
 
 export default function Colleges() {
   const [colleges, setColleges] = useState([]);
@@ -28,7 +28,7 @@ export default function Colleges() {
 
   const fetchCities = async () => {
     try {
-      const res = await axios.get(`${API_URL}/cities/`);
+      const res = await axios.get('/api/cities');
       setCities(res.data.cities || []);
     } catch (err) {
       console.error('Error fetching cities:', err);
@@ -48,7 +48,7 @@ export default function Colleges() {
         page,
         per_page: 12,
       });
-      const res = await axios.get(`${API_URL}/colleges/?${params}`);
+      const res = await axios.get(`/api/colleges?${params}`);
       setColleges(res.data.colleges || []);
       setPagination(res.data.pagination || { pages: 1, total: 0 });
     } catch (err) {

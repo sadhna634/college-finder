@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = '';
 
 export default function CollegeDetail() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function CollegeDetail() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_URL}/colleges/${id}/`);
+      const res = await axios.get(`/api/college/${id}`);
       setCollege(res.data);
     } catch (err) {
       setError(err.message);
