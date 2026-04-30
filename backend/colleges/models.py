@@ -1,13 +1,11 @@
 from django.db import models
 
-# Create your models here.
 class College(models.Model):
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100, default='')
     course = models.CharField(max_length=200)
     description = models.TextField()
-    # Additional fields for documentation requirements
     fees = models.IntegerField(default=0)
     rating = models.FloatField(default=0.0)
     placement_percentage = models.FloatField(default=0.0)

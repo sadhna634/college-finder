@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
 
-const API_URL = '';
+const API_URL = 'http://127.0.0.1:8000';
 
 export default function CollegeDetail() {
   const router = useRouter();
@@ -14,16 +14,14 @@ export default function CollegeDetail() {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    if (id) {
-      fetchCollege();
-    }
+    if (id) fetchCollege();
   }, [id]);
 
   const fetchCollege = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`/api/college/${id}`);
+      const res = await axios.get(`${API_URL}/colleges/${id}/`);
       setCollege(res.data);
     } catch (err) {
       setError(err.message);
@@ -45,9 +43,7 @@ export default function CollegeDetail() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 text-lg mb-4">Error: {error}</p>
-          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800">
-            Back to Colleges
-          </Link>
+          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800">Back to Colleges</Link>
         </div>
       </div>
     );
@@ -57,13 +53,10 @@ export default function CollegeDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-indigo-600">🎓 CollegeFinder</Link>
-            </div>
+            <Link href="/" className="text-2xl font-bold text-indigo-600">🎓 CollegeFinder</Link>
             <div className="flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md font-medium">Home</Link>
               <Link href="/colleges" className="text-indigo-600 px-3 py-2 rounded-md font-medium">Colleges</Link>
@@ -75,14 +68,12 @@ export default function CollegeDetail() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 mb-4 inline-block">
-          ← Back to Colleges
-        </Link>
+        <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 mb-4 inline-block">← Back to Colleges</Link>
 
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-          <div className="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-            <span className="text-8xl">🎓</span>
+          <div className="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <span className="text-7xl">🎓</span>
           </div>
           <div className="p-8">
             <div className="flex justify-between items-start">
@@ -91,10 +82,7 @@ export default function CollegeDetail() {
                 <p className="text-gray-600 text-lg">📍 {college.city}, {college.state}</p>
               </div>
               <div className="text-right">
-                <div className="flex items-center gap-1">
-                  <span className="text-3xl font-bold text-yellow-500">⭐</span>
-                  <span className="text-3xl font-bold text-gray-900">{college.rating}</span>
-                </div>
+                <div className="text-3xl font-bold text-yellow-500">⭐ {college.rating}</div>
                 <p className="text-gray-500 text-sm">Rating</p>
               </div>
             </div>
@@ -124,46 +112,19 @@ export default function CollegeDetail() {
         {/* Tabs */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="flex border-b">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex-1 py-4 px-6 text-center font-medium ${
-                activeTab === 'overview'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('courses')}
-              className={`flex-1 py-4 px-6 text-center font-medium ${
-                activeTab === 'courses'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Courses
-            </button>
-            <button
-              onClick={() => setActiveTab('placements')}
-              className={`flex-1 py-4 px-6 text-center font-medium ${
-                activeTab === 'placements'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Placements
-            </button>
-            <button
-              onClick={() => setActiveTab('reviews')}
-              className={`flex-1 py-4 px-6 text-center font-medium ${
-                activeTab === 'reviews'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Reviews
-            </button>
+            {['overview', 'courses', 'placements', 'reviews'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-4 px-6 text-center font-medium capitalize ${
+                  activeTab === tab
+                    ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
 
           <div className="p-6">
@@ -171,7 +132,6 @@ export default function CollegeDetail() {
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">About College</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">{college.description}</p>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Basic Information</h4>
@@ -185,9 +145,7 @@ export default function CollegeDetail() {
                     <h4 className="font-semibold text-gray-900 mb-2">Exams Accepted</h4>
                     <div className="flex flex-wrap gap-2">
                       {(college.exam_accepted || []).map((exam, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm">
-                          {exam}
-                        </span>
+                        <span key={idx} className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm">{exam}</span>
                       ))}
                     </div>
                   </div>
@@ -220,14 +178,6 @@ export default function CollegeDetail() {
                     <p className="text-gray-600 text-sm">Average Salary</p>
                     <p className="text-4xl font-bold text-blue-600">₹{college.avg_salary?.toLocaleString()}</p>
                   </div>
-                </div>
-                <div className="mt-6 bg-gray-50 rounded-lg p-6">
-                  <h4 className="font-semibold text-gray-900 mb-4">Top Recruiters</h4>
-                  <p className="text-gray-600">
-                    Top companies from various sectors including IT, Finance, Consulting, and Core Engineering 
-                    participate in campus placements. The college has a strong placement cell that ensures 
-                    students get opportunities with leading organizations.
-                  </p>
                 </div>
               </div>
             )}

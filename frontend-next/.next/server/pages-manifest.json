@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/predictor": "pages/predictor.js",
-  "/compare": "pages/compare.js",
+  "/": "pages/index.js",
   "/colleges": "pages/colleges.js",
-  "/": "pages/index.js"
+  "/compare": "pages/compare.js",
+  "/predictor": "pages/predictor.js"
 }

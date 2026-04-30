@@ -10,20 +10,15 @@ from .serializers import CollegeSerializer
 def get_colleges(request):
     """List all colleges with search, filters, and pagination"""
     try:
-        # Get query parameters
         search = request.GET.get('search', '')
         city = request.GET.get('city', '')
-        course = request.GET.get('course', '')
-        min_fees = request.GET.get('min_fees', 0)
         max_fees = request.GET.get('max_fees', 0)
         min_rating = request.GET.get('min_rating', 0)
         page = int(request.GET.get('page', 1))
         per_page = int(request.GET.get('per_page', 12))
         
-        # Base queryset
         colleges = College.objects.all()
         
-        # Apply filters
         if search:
             colleges = colleges.filter(
                 Q(name__icontains=search) | 
@@ -34,22 +29,13 @@ def get_colleges(request):
         if city:
             colleges = colleges.filter(city__icontains=city)
         
-        if course:
-            colleges = colleges.filter(course__icontains=course)
-        
-        if min_fees:
-            colleges = colleges.filter(fees__gte=int(min_fees))
-        
         if max_fees:
             colleges = colleges.filter(fees__lte=int(max_fees))
         
         if min_rating:
             colleges = colleges.filter(rating__gte=float(min_rating))
         
-        # Get total count
         total = colleges.count()
-        
-        # Pagination
         start = (page - 1) * per_page
         end = start + per_page
         colleges = colleges[start:end]
@@ -73,7 +59,7 @@ def get_colleges(request):
 
 @api_view(['GET'])
 def get_college(request, pk):
-    """Get single college by ID with full details"""
+    """Get single college by ID"""
     try:
         college = get_object_or_404(College, pk=pk)
         serializer = CollegeSerializer(college)
@@ -91,7 +77,7 @@ def get_college(request, pk):
 
 @api_view(['GET'])
 def search_colleges(request):
-    """Search and filter colleges by name and city"""
+    """Search and filter colleges"""
     try:
         name = request.GET.get('name', '')
         city = request.GET.get('city', '')
@@ -142,14 +128,13 @@ def predict_colleges(request):
         exam = request.data.get('exam', 'JEE')
         rank = int(request.data.get('rank', 0))
         
-        # Rule-based prediction based on rank ranges
-        if rank <= 1000:
+        if rank <= 5000:
             colleges = College.objects.filter(fees__gte=100000).order_by('-rating')[:10]
-        elif rank <= 5000:
+        elif rank <= 15000:
             colleges = College.objects.filter(fees__gte=50000).order_by('-rating')[:10]
-        elif rank <= 20000:
+        elif rank <= 35000:
             colleges = College.objects.filter(fees__gte=30000).order_by('-rating')[:10]
-        elif rank <= 50000:
+        elif rank <= 75000:
             colleges = College.objects.filter(fees__gte=20000).order_by('-rating')[:10]
         else:
             colleges = College.objects.order_by('-rating')[:10]

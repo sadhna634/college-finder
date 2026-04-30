@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 
-const API_URL = '';
+const API_URL = 'http://127.0.0.1:8000';
 
 export default function Colleges() {
   const [colleges, setColleges] = useState([]);
@@ -10,7 +10,6 @@ export default function Colleges() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [city, setCity] = useState('');
-  const [minFees, setMinFees] = useState(0);
   const [maxFees, setMaxFees] = useState(500000);
   const [minRating, setMinRating] = useState(0);
   const [page, setPage] = useState(1);
@@ -24,11 +23,11 @@ export default function Colleges() {
 
   useEffect(() => {
     fetchColleges();
-  }, [search, city, minFees, maxFees, minRating, page]);
+  }, [search, city, maxFees, minRating, page]);
 
   const fetchCities = async () => {
     try {
-      const res = await axios.get('/api/cities');
+      const res = await axios.get(`${API_URL}/cities/`);
       setCities(res.data.cities || []);
     } catch (err) {
       console.error('Error fetching cities:', err);
@@ -42,13 +41,12 @@ export default function Colleges() {
       const params = new URLSearchParams({
         search,
         city,
-        min_fees: minFees,
         max_fees: maxFees,
         min_rating: minRating,
         page,
         per_page: 12,
       });
-      const res = await axios.get(`/api/colleges?${params}`);
+      const res = await axios.get(`${API_URL}/colleges/?${params}`);
       setColleges(res.data.colleges || []);
       setPagination(res.data.pagination || { pages: 1, total: 0 });
     } catch (err) {
@@ -69,7 +67,6 @@ export default function Colleges() {
   const clearFilters = () => {
     setSearch('');
     setCity('');
-    setMinFees(0);
     setMaxFees(500000);
     setMinRating(0);
     setPage(1);
@@ -81,9 +78,7 @@ export default function Colleges() {
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-indigo-600">🎓 CollegeFinder</Link>
-            </div>
+            <Link href="/" className="text-2xl font-bold text-indigo-600">🎓 CollegeFinder</Link>
             <div className="flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md font-medium">Home</Link>
               <Link href="/colleges" className="text-indigo-600 px-3 py-2 rounded-md font-medium">Colleges</Link>
@@ -99,15 +94,15 @@ export default function Colleges() {
 
         {/* Search and Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Search College</label>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search by name..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -115,7 +110,7 @@ export default function Colleges() {
               <select
                 value={city}
                 onChange={(e) => { setCity(e.target.value); setPage(1); }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">All Cities</option>
                 {cities.map(c => (
@@ -129,7 +124,7 @@ export default function Colleges() {
                 type="number"
                 value={maxFees}
                 onChange={(e) => { setMaxFees(e.target.value); setPage(1); }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -137,7 +132,7 @@ export default function Colleges() {
               <select
                 value={minRating}
                 onChange={(e) => { setMinRating(e.target.value); setPage(1); }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="0">Any Rating</option>
                 <option value="3">3+ Stars</option>
@@ -147,10 +142,7 @@ export default function Colleges() {
             </div>
           </div>
           <div className="mt-4 flex justify-between items-center">
-            <button
-              onClick={clearFilters}
-              className="text-indigo-600 hover:text-indigo-800 font-medium"
-            >
+            <button onClick={clearFilters} className="text-indigo-600 hover:text-indigo-800 font-medium">
               Clear Filters
             </button>
             <p className="text-gray-600">
@@ -162,11 +154,9 @@ export default function Colleges() {
         {/* Compare Selection Bar */}
         {selectedColleges.length > 0 && (
           <div className="bg-indigo-50 rounded-lg shadow-md p-4 mb-6 flex items-center justify-between">
-            <div>
-              <span className="text-indigo-800 font-medium">
-                {selectedColleges.length} college(s) selected for comparison
-              </span>
-            </div>
+            <span className="text-indigo-800 font-medium">
+              {selectedColleges.length} college(s) selected for comparison
+            </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedColleges([])}
@@ -195,12 +185,7 @@ export default function Colleges() {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-800">Error: {error}</p>
-            <button
-              onClick={fetchColleges}
-              className="mt-2 text-red-600 hover:text-red-800 font-medium"
-            >
-              Retry
-            </button>
+            <button onClick={fetchColleges} className="mt-2 text-red-600 hover:text-red-800 font-medium">Retry</button>
           </div>
         )}
 
@@ -214,8 +199,8 @@ export default function Colleges() {
                   selectedColleges.find(c => c.id === college.id) ? 'ring-2 ring-indigo-500' : ''
                 }`}
               >
-                <div className="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-6xl">🎓</span>
+                <div className="h-32 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                  <span className="text-5xl">🎓</span>
                 </div>
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-2">
@@ -249,10 +234,7 @@ export default function Colleges() {
                     </div>
                   </div>
                   
-                  <Link
-                    href={`/colleges/${college.id}`}
-                    className="block mt-4 text-center py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                  >
+                  <Link href={`/colleges/${college.id}`} className="block mt-4 text-center py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                     View Details
                   </Link>
                 </div>
@@ -265,10 +247,7 @@ export default function Colleges() {
         {!loading && !error && colleges.length === 0 && (
           <div className="text-center py-20">
             <p className="text-gray-600 text-lg">No colleges found matching your criteria.</p>
-            <button
-              onClick={clearFilters}
-              className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
-            >
+            <button onClick={clearFilters} className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium">
               Clear Filters
             </button>
           </div>
@@ -280,7 +259,7 @@ export default function Colleges() {
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               Previous
             </button>
@@ -290,7 +269,7 @@ export default function Colleges() {
             <button
               onClick={() => setPage(Math.min(pagination.pages, page + 1))}
               disabled={page === pagination.pages}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               Next
             </button>

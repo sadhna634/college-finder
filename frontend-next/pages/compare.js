@@ -13,11 +13,8 @@ export default function Compare() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (query.colleges) {
-      fetchColleges();
-    } else {
-      setLoading(false);
-    }
+    if (query.colleges) fetchColleges();
+    else setLoading(false);
   }, [query.colleges]);
 
   const fetchColleges = async () => {
@@ -59,12 +56,9 @@ export default function Compare() {
             </div>
           </div>
         </nav>
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <p className="text-gray-600 text-lg mb-4">No colleges selected for comparison.</p>
-          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 font-medium">
-            Browse Colleges to Compare →
-          </Link>
+          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 font-medium">Browse Colleges to Compare →</Link>
         </div>
       </div>
     );
@@ -83,7 +77,6 @@ export default function Compare() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -101,14 +94,6 @@ export default function Compare() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Compare Colleges</h1>
 
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-red-800">Error: {error}</p>
-          </div>
-        )}
-
-        {/* Comparison Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -116,9 +101,7 @@ export default function Compare() {
                 <tr>
                   <th className="px-6 py-4 text-left text-white font-semibold">Feature</th>
                   {colleges.map((college) => (
-                    <th key={college.id} className="px-6 py-4 text-left text-white font-semibold">
-                      {college.name}
-                    </th>
+                    <th key={college.id} className="px-6 py-4 text-left text-white font-semibold">{college.name}</th>
                   ))}
                 </tr>
               </thead>
@@ -127,9 +110,7 @@ export default function Compare() {
                   <tr key={field.key} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                     <td className="px-6 py-4 text-gray-900 font-medium">{field.label}</td>
                     {colleges.map((college) => (
-                      <td key={college.id} className="px-6 py-4 text-gray-600">
-                        {field.format(college[field.key])}
-                      </td>
+                      <td key={college.id} className="px-6 py-4 text-gray-600">{field.format(college[field.key])}</td>
                     ))}
                   </tr>
                 ))}
@@ -138,34 +119,14 @@ export default function Compare() {
                   {colleges.map((college) => (
                     <td key={college.id} className="px-6 py-4 text-gray-600">
                       {(college.courses_offered || []).slice(0, 3).join(', ')}
-                      {(college.courses_offered || []).length > 3 && '...'}
                     </td>
                   ))}
                 </tr>
                 <tr className="bg-white">
-                  <td className="px-6 py-4 text-gray-900 font-medium">Exams</td>
-                  {colleges.map((college) => (
-                    <td key={college.id} className="px-6 py-4 text-gray-600">
-                      <div className="flex flex-wrap gap-1">
-                        {(college.exam_accepted || []).map((exam, idx) => (
-                          <span key={idx} className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
-                            {exam}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                <tr className="bg-gray-50">
                   <td className="px-6 py-4 text-gray-900 font-medium">Action</td>
                   {colleges.map((college) => (
                     <td key={college.id} className="px-6 py-4">
-                      <Link
-                        href={`/colleges/${college.id}`}
-                        className="text-indigo-600 hover:text-indigo-800 font-medium"
-                      >
-                        View Details →
-                      </Link>
+                      <Link href={`/colleges/${college.id}`} className="text-indigo-600 hover:text-indigo-800 font-medium">View Details →</Link>
                     </td>
                   ))}
                 </tr>
@@ -174,20 +135,8 @@ export default function Compare() {
           </div>
         </div>
 
-        {/* Recommendation */}
-        <div className="mt-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">💡 Recommendation</h3>
-          <p className="text-gray-600">
-            Based on the comparison, consider your priorities: if placement is your main concern, 
-            look at the placement percentage. If budget is a constraint, compare the fees. 
-            For quality education, consider the rating and established year.
-          </p>
-        </div>
-
         <div className="mt-6 text-center">
-          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 font-medium">
-            ← Select More Colleges to Compare
-          </Link>
+          <Link href="/colleges" className="text-indigo-600 hover:text-indigo-800 font-medium">← Select More Colleges to Compare</Link>
         </div>
       </div>
     </div>

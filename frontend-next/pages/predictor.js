@@ -58,7 +58,6 @@ export default function Predictor() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -86,7 +85,7 @@ export default function Predictor() {
                 <select
                   value={exam}
                   onChange={(e) => setExam(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 >
                   {exams.map((e) => (
                     <option key={e.value} value={e.value}>{e.label}</option>
@@ -100,7 +99,7 @@ export default function Predictor() {
                   value={rank}
                   onChange={(e) => setRank(e.target.value)}
                   placeholder="Enter your rank"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div className="flex items-end">
@@ -144,7 +143,7 @@ export default function Predictor() {
                       key={college.id}
                       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
                     >
-                      <div className="h-32 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative">
+                      <div className="h-28 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative">
                         <span className="text-5xl">🎓</span>
                         <span className="absolute top-2 left-2 bg-white text-indigo-600 px-2 py-1 rounded-full text-sm font-bold">
                           #{idx + 1}
